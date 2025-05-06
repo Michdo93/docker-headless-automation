@@ -147,6 +147,34 @@ You can access the container's shell for debugging or manual tasks by running:
 docker exec -it <container_name> /bin/bash
 ```
 
+## Manual changes to the Docker container
+
+With the following command you have a bash shell in your container:
+
+```bash
+docker exec -it <container_name> /bin/bash
+```
+
+You can now install new packages via `apt` or `pip3`, for example.
+
+The next step is to commit your container while it is running. If you try to commit the container while it is switched off, your changes have already been lost. It is important that you set the `tag` correctly. Ideally, your versioning increases and you do not overwrite an old tag, because if a change does not work, you can jump back to an older version.
+
+```bash
+docker commit <container_id> docker-headless-automation:<tag>
+```
+
+For example
+
+```
+docker commit docker-headless-automation docker-headless-automation:v3 
+```
+
+However, the compose file only ever starts `docker-headless-automation:latest`. So if you are satisfied with your change and start the container again via `docker compose up -d`, then it is best to tag the latest version to `latest` as well:
+
+```bash
+docker tag docker-headless-automation:v3 docker-headless-automation:latest
+```
+
 ## Troubleshooting
 
 * **Changes to `crontab.txt` not being applied:** Remember to restart the container after modifying `crontab.txt`.
