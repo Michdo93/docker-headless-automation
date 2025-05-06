@@ -28,6 +28,8 @@ docker compose up --build -d
 
 This will build the container and run it in detached mode.
 
+Instead of pulling the container, it makes sense to build it. This is because, for example, a crontab must be created or the system time of the container must be synchronized with the system time of its host. If I would pull the container, the system time would be that of the last snapshot. What does this mean in concrete terms? For example, if you want to execute a script on an exact date, then the date in the container would probably be very different from the desired date. Or executions that take place at a certain time or are to be repeated regularly every hour, minute, second, etc., would probably be executed at a time other than the desired time. We therefore use the host's system time as a guide. We could also use the correct time via a time server, but you may want to orientate yourself to the host and run something on it yourself. However, this also means that you should check the host's system time and adjust it if necessary.
+
 ### Configuration
 
 #### 1. **Volume Configuration**
@@ -104,6 +106,16 @@ display.stop()
 ### Crontab and Automation
 
 The container includes **Crontab** for scheduling automated tasks. Once you've added or modified the cron jobs in `crontab.txt`, restart the container to apply the changes.
+
+As example the `crontab.txt` file looks like this:
+
+```
+* * * * * DISPLAY=:99 /usr/bin/python3 /app/script.py >> /app/cron.log 2>&1
+```
+
+In this example, it executes the `script.py` script every minute and logs it in `cron.log`. The log file must exist beforehand and be created by `touch` if necessary. The log file can be read via the volume.
+
+You can add further scripts and individual log files to this crontab. Please note, however, that you must restart the container for this change to be activated in the crontab. It is very important that you add `DISPLAY=:99` so that the script can also access the virtual desktop of `Xvfb`.
 
 ### Stopping and Restarting the Container
 
