@@ -4,6 +4,7 @@ services:
   docker-headless-automation:
     build: .
     container_name: docker-headless-automation
+    image: docker-headless-automation:latest
     volumes:
       - /opt/docker/volumes/docker-headless-automation:/app
       - /etc/localtime:/etc/localtime:ro
