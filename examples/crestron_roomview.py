@@ -1,8 +1,11 @@
+#!/usr/bin/env python3
+from pyvirtualdisplay import Display
 import webbrowser
 import pyautogui
 import time
 import sys
 from PIL import ImageGrab
+import os
 
 pyautogui.FAILSAFE = False
 BASE_PATH = '/app/openHAB-Crestron-RoomView-Control/images'
@@ -355,4 +358,11 @@ def __toggleButton(toggleButton1: str, toggleButton1Alternative: str, toggleButt
                 print(e)
 
 if __name__ == '__main__':
+    display = Display(visible=0, size=(1024, 768))
+    display.start()
+
+    os.system("xauth generate :99 . trusted")
+
     globals()[sys.argv[1]]()
+
+    display.stop()
